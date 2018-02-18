@@ -41,7 +41,11 @@ app.post('/new-message', function(req, res) {
 
 });
 
+app.get('/', (req, res) => res.send('Hello World!'))
+
+app.get('/hello', (req, res) => res.send('wazzup'))
+
 // Finally, start our server
-app.listen(3000, function() {
-  console.log('Telegram app listening on port 3000!');
+app.listen(8080, function() {
+  console.log('Telegram app listening on port 8080!');
 });
