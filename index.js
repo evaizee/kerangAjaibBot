@@ -22,9 +22,11 @@ app.post('/new-message', function(req, res) {
   // If we've gotten this far, it means that we have received a message containing the word "marco".
   // Respond by hitting the telegram bot API and responding to the approprite chat_id with the word "Polo!!"
   // Remember to use your own API toked instead of the one below  "https://api.telegram.org/bot<your_api_token>/sendMessage"
+  // The command curl -F "url=https://evaizee.xyz/new-message"  https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/setWebhook
+  
   axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
     chat_id: message.chat.id,
-    text: 'Polo!!'
+    text: 'Polo Go!!'
   })
     .then(response => {
       // We get here if the message was successfully posted
