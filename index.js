@@ -5,39 +5,73 @@ const axios = require('axios')
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({
-  extended: true
+	extended: true
 })); // for parsing application/x-www-form-urlencoded
 
 //This is the route the API will call
+let thunderstorm = "\U0001F4A8"    // Code: 200's, 900, 901, 902, 905
+let drizzle = "\U0001F4A7"         // Code: 300's
+let rain = "\U00002614"            // Code: 500's
+let snowflake = "\U00002744"       // Code: 600's snowflake
+let snowman = "\U000026C4"         // Code: 600's snowman, 903, 906
+let atmosphere = "\U0001F301"      // Code: 700's foogy
+let clearSky = "\U00002600"        // Code: 800 clear sky
+let fewClouds = "\U000026C5"       // Code: 801 sun behind clouds
+let clouds = "\U00002601"          // Code: 802-803-804 clouds general
+let hot = "\U0001F525" 			   // Code: 904
+
 app.post('/new-message', function(req, res) {
-  const {message} = req.body
+  	const {message} = req.body
 
   //Each message contains "text" and a "chat" object, which has an "id" which is the chat id
 
-  if (!message || message.text.toLowerCase().indexOf('marco') <0) {
-    // In case a message is not present, or if our message does not have the word marco in it, do nothing and return an empty response
-    return res.end()
-  }
+  	if (!message || message.text.toLowerCase().indexOf('marco') > 0) {
+    	axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
+	    	chat_id: message.chat.id,
+	    	text: 'Polo Go!! ' + snowman
+		})
+    	.then(response => {
+      	// We get here if the message was successfully posted
+	      	console.log('Message posted')
+	      	res.end('ok')
+    	})
+    	.catch(err => {
+      	// ...and here if it was not
+      		console.log('Error :', err)
+      		res.end('Error :' + err)
+    	})
+    	return res.end()
+	}
 
-  // If we've gotten this far, it means that we have received a message containing the word "marco".
-  // Respond by hitting the telegram bot API and responding to the approprite chat_id with the word "Polo!!"
-  // Remember to use your own API toked instead of the one below  "https://api.telegram.org/bot<your_api_token>/sendMessage"
-  // The command curl -F "url=https://evaizee.xyz/new-message"  https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/setWebhook
-  
-  axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
-    chat_id: message.chat.id,
-    text: 'Polo Go!!'
-  })
-    .then(response => {
-      // We get here if the message was successfully posted
-      console.log('Message posted')
-      res.end('ok')
-    })
-    .catch(err => {
-      // ...and here if it was not
-      console.log('Error :', err)
-      res.end('Error :' + err)
-    })
+  	else if (message.text.toLowerCase().indexOf('weather') > 0 ){
+		let city = message.text.substring(10)
+  		let url = 'api.openweathermap.org/data/2.5/weather?q='+city
+  		axios.get(url).then(response => {
+  			//console.log(response);
+  			axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
+		    	chat_id: message.chat.id,
+		    	text: 'Polo Go!! ' + response.main.temp
+			})
+	    	.then(response => {
+	      	// We get here if the message was successfully posted
+		      	console.log('Message posted')
+		      	res.end('ok')
+	    	})
+	    	.catch(err => {
+	      	// ...and here if it was not
+	      		console.log('Error :', err)
+	      		res.end('Error :' + err)
+	    	})
+  		})
+  		.catch(error=>{
+  			console.log(error)
+  		})
+  	}
+
+  	// If we've gotten this far, it means that we have received a message containing the word "marco".
+  	// Respond by hitting the telegram bot API and responding to the approprite chat_id with the word "Polo!!"
+  	// Remember to use your own API toked instead of the one below  "https://api.telegram.org/bot<your_api_token>/sendMessage"
+  	// The command curl -F "url=https://evaizee.xyz/new-message"  https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/setWebhook  
 
 });
 
@@ -45,6 +79,17 @@ app.get('/', (req, res) => res.send('Hello World!'))
 
 app.get('/hello', (req, res) => res.send('wazzup'))
 
+app.get('/weather/:city', function(req, res){
+	let city = req.params.city
+  	let url = 'http://api.openweathermap.org/data/2.5/weather?q='+city+'&APPID=ea654eec38919fc04f92bf923b71b3eb'
+  	console.log('tes')
+  	axios.get(url).then(response => {
+  		console.log(response.data.main.temp + ' ' + clearSky);
+  	})
+  	.catch(error=>{
+  		console.log(error)
+  	})
+})
 // Finally, start our server
 app.listen(8080, function() {
   console.log('Telegram app listening on port 8080!');
