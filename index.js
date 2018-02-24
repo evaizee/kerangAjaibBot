@@ -26,9 +26,11 @@ app.post('/new-message', function(req, res) {
   //Each message contains "text" and a "chat" object, which has an "id" which is the chat id
 
   	if (!message || message.text.toLowerCase().indexOf('marco') > 0) {
+  		console.log('message.text')
+  		let content = 'Polo Go!! ' + snowman
     	axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
 	    	chat_id: message.chat.id,
-	    	text: 'Polo Go!! ' + snowman
+	    	text: content
 		})
     	.then(response => {
       	// We get here if the message was successfully posted
