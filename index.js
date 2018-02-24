@@ -42,7 +42,6 @@ app.post('/new-message', function(req, res) {
       		console.log('Error :', err)
       		res.end('Error :' + err)
     	})
-    	return res.end()
 	}
 
   	else if (message.text.toLowerCase().indexOf('weather') > 0 ){
