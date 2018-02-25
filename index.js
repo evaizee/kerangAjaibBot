@@ -9,23 +9,23 @@ app.use(bodyParser.urlencoded({
 })); // for parsing application/x-www-form-urlencoded
 
 //This is the route the API will call
-let thunderstorm = "\u0001F4A8"    // Code: 200's, 900, 901, 902, 905
-let drizzle = "\u0001F4A7"         // Code: 300's
-let rain = "\u00002614"            // Code: 500's
-let snowflake = "\u00002744"       // Code: 600's snowflake
-let snowman = "\u000026C4"         // Code: 600's snowman, 903, 906
-let atmosphere = "\u0001F301"      // Code: 700's foogy
-let clearSky = "\u00002600"        // Code: 800 clear sky
-let fewClouds = "\u000026C5"       // Code: 801 sun behind clouds
-let clouds = "\u00002601"          // Code: 802-803-804 clouds general
-let hot = "\u0001F525" 			   // Code: 904
+let thunderstorm = '\u1F4A8'    // Code: 200's, 900, 901, 902, 905
+let drizzle = "\u1F4A7"         // Code: 300's
+let rain = "\u2614"            // Code: 500's
+let snowflake = "\u2744"       // Code: 600's snowflake
+let snowman = "\u26C4"         // Code: 600's snowman, 903, 906
+let atmosphere = "\u1F301"      // Code: 700's foogy
+let clearSky = "\u2600"        // Code: 800 clear sky
+let fewClouds = "\u26C5"       // Code: 801 sun behind clouds
+let clouds = "\u2601"          // Code: 802-803-804 clouds general
+let hot = "\u1F525" 			   // Code: 904
 
 app.post('/new-message', function(req, res) {
   	const {message} = req.body
 
   //Each message contains "text" and a "chat" object, which has an "id" which is the chat id
 
-  	if (!message || message.text.toLowerCase().indexOf('marco') > 0) {
+  	if (!message || message.text.toLowerCase().indexOf('marco') >= 0) {
   		console.log('message.text')
   		let content = 'Polo Go!! ' + snowman
     	axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
