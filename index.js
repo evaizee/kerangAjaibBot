@@ -48,10 +48,42 @@ app.post('/new-message', function(req, res) {
 		let city = message.text.substring(10)
   		let url = 'api.openweathermap.org/data/2.5/weather?q='+city
   		axios.get(url).then(response => {
-  			//console.log(response);
+  			
+  			let weather = response.weather.description
+  			let weatherIcon = ''
+
+  			if(weather.toLowerCase().indexOf('thunderstorm')){
+  				weatherIcon = thunderstorm
+  			}
+  			else if(weather.toLowerCase().indexOf('drizzle')){
+  				weatherIcon = drizzle
+  			}
+  			else if(weather.toLowerCase().indexOf('rain')){
+  				weatherIcon = rain
+  			}
+  			else if(weather.toLowerCase().indexOf('snow')){
+  				weatherIcon = snow
+  			}
+  			else if(weather.toLowerCase().indexOf('atmosphere')){
+  				weatherIcon = atmosphere
+  			}
+  			else if(weather.toLowerCase().indexOf('clear')){
+  				weatherIcon = clearSky
+  			}
+  			else if(weather.toLowerCase().indexOf('clouds')){
+  				weatherIcon = clouds
+  			}
+  			else if(weather.toLowerCase().indexOf('extreme')){
+
+  			}
+  			else{
+
+  			}
+
+
   			axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
 		    	chat_id: message.chat.id,
-		    	text: 'Polo Go!! ' + response.main.temp
+		    	text: 'Weather in '+ city + ' right now is ' + response.weather.description + ' ' + weatherIcon + '\n' + 'Temperature : ' + response.main.temp
 			})
 	    	.then(response => {
 	      	// We get here if the message was successfully posted
