@@ -44,7 +44,7 @@ app.post('/new-message', function(req, res) {
     	})
 	}
 
-  	else if (message.text.toLowerCase().indexOf('weather') > 0 ){
+  	else if (message.text.toLowerCase().indexOf('weather') >= 0 ){
 		let city = message.text.substring(10)
   		let url = 'api.openweathermap.org/data/2.5/weather?q='+city
   		axios.get(url).then(response => {
@@ -52,34 +52,30 @@ app.post('/new-message', function(req, res) {
   			let weather = response.weather.description
   			let weatherIcon = ''
 
-  			if(weather.toLowerCase().indexOf('thunderstorm')){
+  			if(weather.toLowerCase().indexOf('thunderstorm') >= 0){
   				weatherIcon = thunderstorm
   			}
-  			else if(weather.toLowerCase().indexOf('drizzle')){
+  			else if(weather.toLowerCase().indexOf('drizzle') >= 0){
   				weatherIcon = drizzle
   			}
-  			else if(weather.toLowerCase().indexOf('rain')){
+  			else if(weather.toLowerCase().indexOf('rain') >= 0){
   				weatherIcon = rain
   			}
-  			else if(weather.toLowerCase().indexOf('snow')){
+  			else if(weather.toLowerCase().indexOf('snow') >= 0){
   				weatherIcon = snow
   			}
-  			else if(weather.toLowerCase().indexOf('atmosphere')){
+  			else if(weather.toLowerCase().indexOf('atmosphere') >= 0){
   				weatherIcon = atmosphere
   			}
-  			else if(weather.toLowerCase().indexOf('clear')){
+  			else if(weather.toLowerCase().indexOf('clear') >= 0){
   				weatherIcon = clearSky
   			}
-  			else if(weather.toLowerCase().indexOf('clouds')){
+  			else if(weather.toLowerCase().indexOf('clouds') >= 0){
   				weatherIcon = clouds
   			}
-  			else if(weather.toLowerCase().indexOf('extreme')){
+  			else if(weather.toLowerCase().indexOf('extreme') >= 0){
 
   			}
-  			else{
-
-  			}
-
 
   			axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
 		    	chat_id: message.chat.id,
