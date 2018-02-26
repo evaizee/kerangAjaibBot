@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 const axios = require('axios')
+const util = require('util')
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({
@@ -45,13 +46,13 @@ app.post('/new-message', function(req, res) {
 	}
 
   	else if (message.text.toLowerCase().indexOf('weather') >= 0 ){
-		let city = message.text.substring(10)
-  		let url = 'api.openweathermap.org/data/2.5/weather?q='+city
+		let city = message.text.substring(11)
+  		let url = 'http://api.openweathermap.org/data/2.5/weather?appid=ea654eec38919fc04f92bf923b71b3eb&units=metric&q='+city
   		axios.get(url).then(response => {
   			
-  			let weather = response.weather.description
+  			let weather = response.data['weather'][0]['main']
   			let weatherIcon = ''
-
+			
   			if(weather.toLowerCase().indexOf('thunderstorm') >= 0){
   				weatherIcon = thunderstorm
   			}
@@ -79,7 +80,7 @@ app.post('/new-message', function(req, res) {
 
   			axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
 		    	chat_id: message.chat.id,
-		    	text: 'Weather in '+ city + ' right now is ' + response.weather.description + ' ' + weatherIcon + '\n' + 'Temperature : ' + response.main.temp
+		    	text: 'Weather in '+ city + ' right now is ' + weather + ' ' + weatherIcon + '\n' + 'Temperature : ' + response.data.main.temp
 			})
 	    	.then(response => {
 	      	// We get here if the message was successfully posted
@@ -93,8 +94,10 @@ app.post('/new-message', function(req, res) {
 	    	})
   		})
   		.catch(error=>{
+res.end('error')
   			console.log(error)
   		})
+
   	}
 
   	// If we've gotten this far, it means that we have received a message containing the word "marco".
