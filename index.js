@@ -25,80 +25,83 @@ app.post('/new-message', function(req, res) {
   	const {message} = req.body
 
   //Each message contains "text" and a "chat" object, which has an "id" which is the chat id
+  if(message.text != undefined){
+    if (!message || message.text.toLowerCase().indexOf('marco') >= 0) {
+      console.log('message.text')
+      let content = 'Polo Go!! ' + snowman
+      axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
+        chat_id: message.chat.id,
+        text: content
+    })
+      .then(response => {
+        // We get here if the message was successfully posted
+          console.log('Message posted')
+          res.end('ok')
+      })
+      .catch(err => {
+        // ...and here if it was not
+          console.log('Error :', err)
+          res.end('Error :' + err)
+      })
+    }
 
-  	if (!message || message.text.toLowerCase().indexOf('marco') >= 0) {
-  		console.log('message.text')
-  		let content = 'Polo Go!! ' + snowman
-    	axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
-	    	chat_id: message.chat.id,
-	    	text: content
-		})
-    	.then(response => {
-      	// We get here if the message was successfully posted
-	      	console.log('Message posted')
-	      	res.end('ok')
-    	})
-    	.catch(err => {
-      	// ...and here if it was not
-      		console.log('Error :', err)
-      		res.end('Error :' + err)
-    	})
-	  }
-
-  	else if (message.text.toLowerCase().indexOf('weather') >= 0 ){
-		  let city = message.text.substring(11)
-  		let url = 'http://api.openweathermap.org/data/2.5/weather?appid=ea654eec38919fc04f92bf923b71b3eb&units=metric&q='+city
-  		axios.get(url).then(response => {
-  			
-  			let weather = response.data['weather'][0]['description']
+    else if (message.text.toLowerCase().indexOf('weather') >= 0 ){
+      let city = message.text.substring(11)
+      let url = 'http://api.openweathermap.org/data/2.5/weather?appid=ea654eec38919fc04f92bf923b71b3eb&units=metric&q='+city
+      axios.get(url).then(response => {
+        
+        let weather = response.data['weather'][0]['description']
         let weatherId = response.data['weather'][0]['id']
-  			let weatherIcon = ''
-			
-  			if(weatherId < 300){
-  				weatherIcon = thunderstorm
-  			}
-  			else if(weatherId < 400 && weatherId >= 300){
-  				weatherIcon = drizzle
-  			}
-  			else if(weatherId < 600 && weatherId >= 500){
-  				weatherIcon = rain
-  			}
-  			else if(weatherId < 700 && weatherId >= 600){
-  				weatherIcon = snow
-  			}
-  			else if(weatherId < 800 && weatherId >= 700){
-  				weatherIcon = atmosphere
-  			}
-  			else if(weatherId == 800){
-  				weatherIcon = clearSky
-  			}
-  			else if(weatherId > 800 && weatherId < 900){
-  				weatherIcon = clouds
-  			}
-  			else{
+        let weatherIcon = ''
+      
+        if(weatherId < 300){
+          weatherIcon = thunderstorm
+        }
+        else if(weatherId < 400 && weatherId >= 300){
+          weatherIcon = drizzle
+        }
+        else if(weatherId < 600 && weatherId >= 500){
+          weatherIcon = rain
+        }
+        else if(weatherId < 700 && weatherId >= 600){
+          weatherIcon = snow
+        }
+        else if(weatherId < 800 && weatherId >= 700){
           weatherIcon = atmosphere
-  			}
+        }
+        else if(weatherId == 800){
+          weatherIcon = clearSky
+        }
+        else if(weatherId > 800 && weatherId < 900){
+          weatherIcon = clouds
+        }
+        else{
+          weatherIcon = atmosphere
+        }
 
-  			axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
-		    	chat_id: message.chat.id,
-		    	text: 'Weather in '+ city + ' right now is ' + weather + ' ' + weatherIcon + '\n' + 'Temperature : ' + response.data.main.temp
-			})
-	    	.then(response => {
-	      	// We get here if the message was successfully posted
-		      	console.log('Message posted')
-		      	res.end('ok')
-	    	})
-	    	.catch(err => {
-	      	// ...and here if it was not
-	      		console.log('Error :', err)
-	      		res.end('Error :' + err)
-	    	})
-  		})
-  		.catch(error=>{
+        axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
+          chat_id: message.chat.id,
+          text: 'Weather in '+ city + ' right now is ' + weather + ' ' + weatherIcon + '\n' + 'Temperature : ' + response.data.main.temp
+      })
+        .then(response => {
+          // We get here if the message was successfully posted
+            console.log('Message posted')
+            res.end('ok')
+        })
+        .catch(err => {
+          // ...and here if it was not
+            console.log('Error :', err)
+            res.end('Error :' + err)
+        })
+      })
+      .catch(error=>{
         res.end('error')
-  			console.log(error)
-  		})
-  	}
+        console.log(error)
+      })
+    } 
+  }
+
+  	
 
   	// If we've gotten this far, it means that we have received a message containing the word "marco".
   	// Respond by hitting the telegram bot API and responding to the approprite chat_id with the word "Polo!!"
