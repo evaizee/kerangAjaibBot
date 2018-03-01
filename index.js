@@ -10,12 +10,12 @@ app.use(bodyParser.urlencoded({
 })); // for parsing application/x-www-form-urlencoded
 
 //This is the route the API will call
-let thunderstorm = '\u1F429'    // Code: 200's, 900, 901, 902, 905
+let thunderstorm = '\u26C8'    // Code: 200's, 900, 901, 902, 905
 let drizzle = "\u1F4A7"         // Code: 300's
 let rain = "\u2614"            // Code: 500's
 let snowflake = "\u2744"       // Code: 600's snowflake
 let snowman = "\u26C4"         // Code: 600's snowman, 903, 906
-let atmosphere = "\u1F301"      // Code: 700's foogy
+let atmosphere = "\uD83C\uDF01"      // Code: 700's foogy
 let clearSky = "\u2600"        // Code: 800 clear sky
 let fewClouds = "\u26C5"       // Code: 801 sun behind clouds
 let clouds = "\u2601"          // Code: 802-803-804 clouds general
@@ -53,7 +53,7 @@ app.post('/new-message', function(req, res) {
         let weather = response.data['weather'][0]['description']
         let weatherId = response.data['weather'][0]['id']
         let weatherIcon = ''
-      
+      console.log(response.data['weather'][0])
         if(weatherId < 300){
           weatherIcon = thunderstorm
         }
@@ -78,6 +78,7 @@ app.post('/new-message', function(req, res) {
         else{
           weatherIcon = atmosphere
         }
+console.log(weatherIcon)
 
         axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
           chat_id: message.chat.id,
