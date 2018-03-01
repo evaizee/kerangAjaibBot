@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({
 })); // for parsing application/x-www-form-urlencoded
 
 //This is the route the API will call
-let thunderstorm = '\u1F4A8'    // Code: 200's, 900, 901, 902, 905
+let thunderstorm = '\u1F429'    // Code: 200's, 900, 901, 902, 905
 let drizzle = "\u1F4A7"         // Code: 300's
 let rain = "\u2614"            // Code: 500's
 let snowflake = "\u2744"       // Code: 600's snowflake
@@ -43,39 +43,40 @@ app.post('/new-message', function(req, res) {
       		console.log('Error :', err)
       		res.end('Error :' + err)
     	})
-	}
+	  }
 
   	else if (message.text.toLowerCase().indexOf('weather') >= 0 ){
-		let city = message.text.substring(11)
+		  let city = message.text.substring(11)
   		let url = 'http://api.openweathermap.org/data/2.5/weather?appid=ea654eec38919fc04f92bf923b71b3eb&units=metric&q='+city
   		axios.get(url).then(response => {
   			
-  			let weather = response.data['weather'][0]['main']
+  			let weather = response.data['weather'][0]['description']
+        let weatherId = response.data['weather'][0]['id']
   			let weatherIcon = ''
 			
-  			if(weather.toLowerCase().indexOf('thunderstorm') >= 0){
+  			if(weatherId < 300){
   				weatherIcon = thunderstorm
   			}
-  			else if(weather.toLowerCase().indexOf('drizzle') >= 0){
+  			else if(weatherId < 400 && weatherId >= 300){
   				weatherIcon = drizzle
   			}
-  			else if(weather.toLowerCase().indexOf('rain') >= 0){
+  			else if(weatherId < 600 && weatherId >= 500){
   				weatherIcon = rain
   			}
-  			else if(weather.toLowerCase().indexOf('snow') >= 0){
+  			else if(weatherId < 700 && weatherId >= 600){
   				weatherIcon = snow
   			}
-  			else if(weather.toLowerCase().indexOf('atmosphere') >= 0){
+  			else if(weatherId < 800 && weatherId >= 700){
   				weatherIcon = atmosphere
   			}
-  			else if(weather.toLowerCase().indexOf('clear') >= 0){
+  			else if(weatherId == 800){
   				weatherIcon = clearSky
   			}
-  			else if(weather.toLowerCase().indexOf('clouds') >= 0){
+  			else if(weatherId > 800 && weatherId < 900){
   				weatherIcon = clouds
   			}
-  			else if(weather.toLowerCase().indexOf('extreme') >= 0){
-
+  			else{
+          weatherIcon = atmosphere
   			}
 
   			axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
@@ -94,10 +95,9 @@ app.post('/new-message', function(req, res) {
 	    	})
   		})
   		.catch(error=>{
-res.end('error')
+        res.end('error')
   			console.log(error)
   		})
-
   	}
 
   	// If we've gotten this far, it means that we have received a message containing the word "marco".
