@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({
 
 app.post('/new-message', function(req, res) {
     const message = req.body.message
-
+console.log(message)
   //Each message contains "text" and a "chat" object, which has an "id" which is the chat id
     if(message.text != undefined){
         if (message.text.toLowerCase().indexOf('weather') >= 0 ){
@@ -34,13 +34,14 @@ app.post('/new-message', function(req, res) {
                 })
             }).catch(err => {
                 request.sendCoordinateRequest(place, axios).then(placeResult => {
-                    let place = new Object()
+                    let coord = new Object()
 
-                    place.lat = placeResult.geometry.location.lat
-                    place.lon = placeResult.geometry.location.lng
+                    coord.lat = placeResult.geometry.location.lat
+                    coord.lon = placeResult.geometry.location.lng
 
-                    request.sendWeatherRequest(place, 'coordinate', axios).then(result => {
-                        weatherIcon = request.setWeatherIcon(result.id)
+                    request.sendWeatherRequest(coord, 'coordinate', axios).then(result => {
+
+  weatherIcon = request.setWeatherIcon(result.id)
                         text = 'Weather in '+ place + ' right now is ' + result['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
 
                         request.sendMessage(text, message.chat.id, axios).then(response => {
