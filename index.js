@@ -22,23 +22,29 @@ app.post('/new-message', function(req, res) {
             let text = ''
 
             request.sendWeatherRequest(place, 'place', axios).then(weatherResult => {
-                if(weatherResult == false){
-                    request.sendCoordinateRequest(place, axios).then(placeResult => {
-                        let place = new Object()
-                        place.lat = placeResult.geometry.location.lat
-                        place.lon = placeResult.geometry.location.lng
+                weatherIcon = request.setWeatherIcon(weatherResult.id)
+                text = 'Weather in '+ place + ' right now is ' + weatherResult['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + weatherResult.main.temp
 
-                        request.sendWeatherRequest(place, 'coordinate', axios).then(result => {
-                            weatherIcon = request.setWeatherIcon(result.id)
-                            text = 'Weather in '+ place + ' right now is ' + result['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
+                request.sendMessage(text, message.chat.id, axios).then(response => {
+                    console.log('message sent')
+                    res.end('ok')
+                }).catch(err => {
+                    console.log('Error :', err)
+                    res.end('Error :' + err)
+                })
+            }).catch(err => {
+                request.sendCoordinateRequest(place, axios).then(placeResult => {
+                    let place = new Object()
+                    place.lat = placeResult.geometry.location.lat
+                    place.lon = placeResult.geometry.location.lng
 
-                            request.sendMessage(text, message.chat.id, axios).then(response => {
-                                console.log('message sent')
-                                res.end('ok')
-                            }).catch(err => {
-                                console.log('Error :', err)
-                                res.end('Error :' + err)
-                            })
+                    request.sendWeatherRequest(place, 'coordinate', axios).then(result => {
+                        weatherIcon = request.setWeatherIcon(result.id)
+                        text = 'Weather in '+ place + ' right now is ' + result['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
+
+                        request.sendMessage(text, message.chat.id, axios).then(response => {
+                            console.log('message sent')
+                            res.end('ok')
                         }).catch(err => {
                             console.log('Error :', err)
                             res.end('Error :' + err)
@@ -47,23 +53,10 @@ app.post('/new-message', function(req, res) {
                         console.log('Error :', err)
                         res.end('Error :' + err)
                     })
-                }
-
-                else{
-                    weatherIcon = request.setWeatherIcon(weatherResult.id)
-                    text = 'Weather in '+ place + ' right now is ' + weatherResult['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + weatherResult.main.temp
-
-                    request.sendMessage(text, message.chat.id, axios).then(response => {
-                        console.log('message sent')
-                        res.end('ok')
-                    }).catch(err => {
-                        console.log('Error :', err)
-                        res.end('Error :' + err)
-                    })
-                }
-            }).catch(err => {
-                console.log('Error :', err)
-                res.end('Error :' + err)
+                }).catch(err => {
+                    console.log('Error :', err)
+                    res.end('Error :' + err)
+                })
             })
         } 
     }

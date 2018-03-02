@@ -26,7 +26,7 @@ var sendWeatherRequest = function (location, type, axios) {
 		}
 
 		axios.get(url).then(response => {
-			if(response.data['weather'] != undefined){
+			if(response.status['weather'] != undefined){
 				return resolve(response.data)	
 			}
 			else{
@@ -34,7 +34,6 @@ var sendWeatherRequest = function (location, type, axios) {
 			}
 
       	}).catch(error=>{
-      		console.log(error)
 	        return reject(error)
       	})
 	})
