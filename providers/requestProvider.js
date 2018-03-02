@@ -43,8 +43,8 @@ var sendCoordinateRequest = function (location, axios){
 	return new Promise(function (resolve, reject) {
 		let url = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query='+location+'&key='+googleKey
 		axios.get(url).then(response => {
-			if(response.status.toLowerCase() == 'OK'){
-				return resolve(response.results[0])
+			if(response.data.status.toLowerCase() == 'ok'){
+				return resolve(response.data.results[0])
 			}
 			else{
 				return resolve(false)

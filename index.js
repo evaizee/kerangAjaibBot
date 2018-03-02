@@ -35,6 +35,7 @@ app.post('/new-message', function(req, res) {
             }).catch(err => {
                 request.sendCoordinateRequest(place, axios).then(placeResult => {
                     let place = new Object()
+
                     place.lat = placeResult.geometry.location.lat
                     place.lon = placeResult.geometry.location.lng
 
