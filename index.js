@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.post('/new-message', function(req, res) {
-    const {message} = req.body
+    const message = req.body
 
   //Each message contains "text" and a "chat" object, which has an "id" which is the chat id
     if(message.text != undefined){
@@ -22,7 +22,7 @@ app.post('/new-message', function(req, res) {
             let message = ''
 
             request.sendWeatherRequest(place, 'place', axios).then(weatherResult => {
-                if(result == false){
+                if(weatherResult == false){
                     request.sendCoordinateRequest(place, axios).then(placeResult => {
                         let place = new Object()
                         place.lat = placeResult.geometry.location.lat
@@ -89,7 +89,7 @@ app.post('/new-message', function(req, res) {
         })
     }
     else{
-        axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
+        /*axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
             chat_id: message.chat.id,
             text: 'Sorry but i cannot understand your message'
         }).then(response => {
@@ -100,7 +100,8 @@ app.post('/new-message', function(req, res) {
       // ...and here if it was not
             console.log('Error :', err)
             res.end('Error :' + err)
-        })
+        })*/
+        res.end('ok')
     }
 })
 
