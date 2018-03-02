@@ -12,14 +12,14 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.post('/new-message', function(req, res) {
-    const message = req.body
+    const message = req.body.message
 
   //Each message contains "text" and a "chat" object, which has an "id" which is the chat id
     if(message.text != undefined){
         if (message.text.toLowerCase().indexOf('weather') >= 0 ){
             let place = message.text.substring(11)
             let weatherIcon = ''
-            let message = ''
+            let text = ''
 
             request.sendWeatherRequest(place, 'place', axios).then(weatherResult => {
                 if(weatherResult == false){
@@ -30,9 +30,9 @@ app.post('/new-message', function(req, res) {
 
                         request.sendWeatherRequest(place, 'coordinate', axios).then(result => {
                             weatherIcon = request.setWeatherIcon(result.id)
-                            message = 'Weather in '+ place + ' right now is ' + result['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
+                            text = 'Weather in '+ place + ' right now is ' + result['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
 
-                            request.sendMessage(message, message.chat.id, axios).then(response => {
+                            request.sendMessage(text, message.chat.id, axios).then(response => {
                                 console.log('message sent')
                                 res.end('ok')
                             }).catch(err => {
@@ -50,10 +50,10 @@ app.post('/new-message', function(req, res) {
                 }
 
                 else{
-                    weatherIcon = request.setWeatherIcon(result.id)
-                    message = 'Weather in '+ place + ' right now is ' + weatherResult['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + weatherResult.main.temp
+                    weatherIcon = request.setWeatherIcon(weatherResult.id)
+                    text = 'Weather in '+ place + ' right now is ' + weatherResult['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + weatherResult.main.temp
 
-                    request.sendMessage(message, message.chat.id, axios).then(response => {
+                    request.sendMessage(text, message.chat.id, axios).then(response => {
                         console.log('message sent')
                         res.end('ok')
                     }).catch(err => {
@@ -74,7 +74,7 @@ app.post('/new-message', function(req, res) {
 
         request.sendWeatherRequest(place, 'coordinate', axios).then(result => {
             weatherIcon = request.setWeatherIcon(result.id)
-            message = 'Weather in '+ place + ' right now is ' + result['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
+            text = 'Weather in '+ place + ' right now is ' + result['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
 
             request.sendMessage(message, message.chat.id, axios).then(response => {
                 console.log('message sent')
