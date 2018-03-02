@@ -14,7 +14,7 @@ const clouds        = "\u2601"
 const hot           = "\u1F525"
 
 var sendWeatherRequest = function (location, type, axios) {
-	return new Promise(function (result) {
+	return new Promise(function (resolve, reject) {
 		let url = 'http://api.openweathermap.org/data/2.5/weather?appid='+weatherKey+'&units=metric'
 		switch(type){
 			case 'city':
@@ -40,7 +40,7 @@ var sendWeatherRequest = function (location, type, axios) {
 }
 
 var sendCoordinateRequest = function (location, axios){
-	return new Promise(function (result) {
+	return new Promise(function (resolve, reject) {
 		let url = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query='+location+'&key='+googleKey
 		axios.get(url).then(response => {
 			if(response.status.toLowerCase() == 'OK'){
