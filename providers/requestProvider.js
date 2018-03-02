@@ -17,11 +17,12 @@ var sendWeatherRequest = function (location, type, axios) {
 	return new Promise(function (resolve, reject) {
 		let url = 'http://api.openweathermap.org/data/2.5/weather?appid='+weatherKey+'&units=metric'
 		switch(type){
-			case 'city':
+			case 'place':
 				url = url+'&q='+location
 				break
 			case 'coordinate':
 				url = url+'&lat='+location.lat+'&lon='+location.lon
+				break
 		}
 
 		axios.get(url).then(response => {
