@@ -41,7 +41,7 @@ console.log(message)
 
                     request.sendWeatherRequest(coord, 'coordinate', axios).then(result => {
 
-  weatherIcon = request.setWeatherIcon(result.id)
+                        weatherIcon = request.setWeatherIcon(result.id)
                         text = 'Weather in '+ place + ' right now is ' + result['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
 
                         request.sendMessage(text, message.chat.id, axios).then(response => {
@@ -60,7 +60,10 @@ console.log(message)
                     res.end('Error :' + err)
                 })
             })
-        } 
+        }
+        else{
+            res.end('ok')
+        }
     }
     else if(message.location != undefined){
         let place = new Object()
