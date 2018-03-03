@@ -35,22 +35,32 @@ console.log(message)
             }).catch(err => {
                 request.sendCoordinateRequest(place, axios).then(placeResult => {
                     let coord = new Object()
-
                     coord.lat = placeResult.geometry.location.lat
                     coord.lon = placeResult.geometry.location.lng
 
                     request.sendWeatherRequest(coord, 'coordinate', axios).then(result => {
+                        if(result != false){
+                            weatherIcon = request.setWeatherIcon(result.id)
+                            text = 'Weather in '+ place + ' right now is ' + result['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
 
-                        weatherIcon = request.setWeatherIcon(result.id)
-                        text = 'Weather in '+ place + ' right now is ' + result['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
-
-                        request.sendMessage(text, message.chat.id, axios).then(response => {
-                            console.log('message sent')
-                            res.end('ok')
-                        }).catch(err => {
-                            console.log('Error :', err)
-                            res.end('Error :' + err)
-                        })
+                            request.sendMessage(text, message.chat.id, axios).then(response => {
+                                console.log('message sent')
+                                res.end('ok')
+                            }).catch(err => {
+                                console.log('Error :', err)
+                                res.end('Error :' + err)
+                            })
+                        }
+                        else{
+                            text = "I cannot find " + place + ", please insert another location"
+                            request.sendMessage(text, message.chat.id, axios).then(response => {
+                                console.log('message sent')
+                                res.end('ok')
+                            }).catch(err => {
+                                console.log('Error :', err)
+                                res.end('Error :' + err)
+                            })
+                        }
                     }).catch(err => {
                         console.log('Error :', err)
                         res.end('Error :' + err)
@@ -62,7 +72,14 @@ console.log(message)
             })
         }
         else{
-            res.end('ok')
+            text = "I cannot understand what you mean"
+            request.sendMessage(text, message.chat.id, axios).then(response => {
+                console.log('message sent')
+                res.end('ok')
+            }).catch(err => {
+                console.log('Error :', err)
+                res.end('Error :' + err)
+            })
         }
     }
     else if(message.location != undefined){
@@ -87,19 +104,14 @@ console.log(message)
         })
     }
     else{
-        /*axios.post('https://api.telegram.org/bot418249931:AAE26HXheocEBfK3kpFQzoJCfkk40H8BmWI/sendMessage', {
-            chat_id: message.chat.id,
-            text: 'Sorry but i cannot understand your message'
-        }).then(response => {
-        // We get here if the message was successfully posted
-            console.log('Message posted')
+        text = "I cannot understand what you mean"
+        request.sendMessage(text, message.chat.id, axios).then(response => {
+            console.log('message sent')
             res.end('ok')
         }).catch(err => {
-      // ...and here if it was not
             console.log('Error :', err)
             res.end('Error :' + err)
-        })*/
-        res.end('ok')
+        })
     }
 })
 
