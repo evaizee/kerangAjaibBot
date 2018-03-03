@@ -34,37 +34,49 @@ console.log(message)
                 })
             }).catch(err => {
                 request.sendCoordinateRequest(place, axios).then(placeResult => {
+                    if(placeResult != false){
+                        let coord = new Object()
+                        coord.lat = placeResult.geometry.location.lat
+                        coord.lon = placeResult.geometry.location.lng
 
-                    request.sendWeatherRequest(coord, 'coordinate', axios).then(result => {
-                        if(result != false){
-                            let coord   = new Object()
-                            coord.lat   = placeResult.geometry.location.lat
-                            coord.lon   = placeResult.geometry.location.lng
-                            weatherIcon = request.setWeatherIcon(result.id)
-                            text        = 'Weather in '+ place + ' right now is ' + result['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
+                        request.sendWeatherRequest(coord, 'coordinate', axios).then(result => {
+                            if(result != false){
+                                weatherIcon = request.setWeatherIcon(result.id)
+                                text = 'Weather in '+ place + ' right now is ' + result['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
 
-                            request.sendMessage(text, message.chat.id, axios).then(response => {
-                                console.log('message sent')
-                                res.end('ok')
-                            }).catch(err => {
-                                console.log('Error :', err)
-                                res.end('Error :' + err)
-                            })
-                        }
-                        else{
-                            text = "I cannot find " + place + ", please insert another location"
-                            request.sendMessage(text, message.chat.id, axios).then(response => {
-                                console.log('message sent')
-                                res.end('ok')
-                            }).catch(err => {
-                                console.log('Error :', err)
-                                res.end('Error :' + err)
-                            })
-                        }
-                    }).catch(err => {
-                        console.log('Error :', err)
-                        res.end('Error :' + err)
-                    })
+                                request.sendMessage(text, message.chat.id, axios).then(response => {
+                                    console.log('message sent')
+                                    res.end('ok')
+                                }).catch(err => {
+                                    console.log('Error :', err)
+                                    res.end('Error :' + err)
+                                })
+                            }
+                            else{
+                                text = "I cannot find " + place + ", please insert another location"
+                                request.sendMessage(text, message.chat.id, axios).then(response => {
+                                    console.log('message sent')
+                                    res.end('ok')
+                                }).catch(err => {
+                                    console.log('Error :', err)
+                                    res.end('Error :' + err)
+                                })
+                            }
+                        }).catch(err => {
+                            console.log('Error :', err)
+                            res.end('Error :' + err)
+                        })
+                    }
+                    else{
+                        text = "I cannot find " + place + ", please insert another location"
+                        request.sendMessage(text, message.chat.id, axios).then(response => {
+                            console.log('message sent')
+                            res.end('ok')
+                        }).catch(err => {
+                            console.log('Error :', err)
+                            res.end('Error :' + err)
+                        })
+                    }
                 }).catch(err => {
                     console.log('Error :', err)
                     res.end('Error :' + err)
