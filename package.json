@@ -1,16 +1,16 @@
 {
-  "name": "kerangajaibbot",
+  "name": "Telegram Weather Bot",
   "version": "1.0.0",
-  "description": "Bot untuk pemuja kerang ajaib",
+  "description": "Bot to check Weather condition in your areas",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
   "keywords": [
-    "kerang",
-    "ajaib",
-    "puja"
+    "weather",
+    "bot",
+    "Telegram"
   ],
   "author": "evaizee",
   "license": "ISC",
@@ -19,6 +19,10 @@
     "body-parser": "^1.18.2",
     "dotenv": "^5.0.1",
     "express": "^4.16.1",
+    "npm": "^5.8.0",
     "pm2": "^2.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.2"
   }
 }
