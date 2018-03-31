@@ -20,7 +20,8 @@
     "dotenv": "^5.0.1",
     "express": "^4.16.1",
     "npm": "^5.8.0",
-    "pm2": "^2.7.1"
+    "pm2": "^2.7.1",
+    "update": "^0.7.4"
   },
   "devDependencies": {
     "nodemon": "^1.17.2"
