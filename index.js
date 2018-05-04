@@ -19,13 +19,13 @@ app.post('/new-message/'+process.env.TELEGRAM_BOT_ID, function(req, res) {
     if(message.text != undefined){
         if(message.text.toLowerCase().indexOf('/hourly') >= 0 || message.text.toLowerCase().indexOf('/daily') >= 0 || message.text.toLowerCase().indexOf('/hi') >= 0 || message.text.toLowerCase().indexOf('/now') >= 0){
             let text = help.getHelpInfo(message.text.toLowerCase())
-            /*request.sendMessage(text, message.chat.id, axios).then(response => {
+            request.sendMessage(text, message.chat.id, axios).then(response => {
                 console.log('message sent')
                 res.end('ok')
             }).catch(err => {
                 console.log('Error :', err)
                 res.end('Error :' + err)
-            })*/
+            })
             console.log(text)            
         }
         else if(message.text.toLowerCase().indexOf('hourly') >= 0 || message.text.toLowerCase().indexOf('daily') >= 0 || message.text.toLowerCase().indexOf('hi') >= 0 || message.text.toLowerCase().indexOf('now') >= 0){
