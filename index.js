@@ -5,86 +5,97 @@ const app         = express()
 const bodyParser  = require('body-parser')
 const axios       = require('axios')
 const request     = require('./providers/requestProvider')
+const help        = require('./providers/helpProvider')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
 
-app.post('/new-message', function(req, res) {
+app.post('/new-message/'+process.env.TELEGRAM_BOT_ID, function(req, res) {
     const message = req.body.message
-console.log(message)
+
   //Each message contains "text" and a "chat" object, which has an "id" which is the chat id
     if(message.text != undefined){
-        if (message.text.toLowerCase().indexOf('weather') >= 0 ){
-            let place = message.text.substring(11)
-            let weatherIcon = ''
-            let text = ''
-
-            request.sendWeatherRequest(place, 'place', axios).then(weatherResult => {
-                weatherIcon = request.setWeatherIcon(weatherResult.id)
-                text = 'Weather in '+ place + ' right now is ' + weatherResult['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + weatherResult.main.temp
-
-                request.sendMessage(text, message.chat.id, axios).then(response => {
-                    console.log('message sent')
-                    res.end('ok')
-                }).catch(err => {
-                    console.log('Error :', err)
-                    res.end('Error :' + err)
-                })
+        if(message.text.toLowerCase().indexOf('/hourly') >= 0 || message.text.toLowerCase().indexOf('/daily') >= 0 || message.text.toLowerCase().indexOf('/hi') >= 0 || message.text.toLowerCase().indexOf('/now') >= 0){
+            let text = help.getHelpInfo(message.text.toLowerCase())
+            /*request.sendMessage(text, message.chat.id, axios).then(response => {
+                console.log('message sent')
+                res.end('ok')
             }).catch(err => {
-                request.sendCoordinateRequest(place, axios).then(placeResult => {
-                    if(placeResult != false){
-                        let coord = new Object()
-                        coord.lat = placeResult.geometry.location.lat
-                        coord.lon = placeResult.geometry.location.lng
+                console.log('Error :', err)
+                res.end('Error :' + err)
+            })*/
+            console.log(text)            
+        }
+        else if(message.text.toLowerCase().indexOf('hourly') >= 0 || message.text.toLowerCase().indexOf('daily') >= 0 || message.text.toLowerCase().indexOf('hi') >= 0 || message.text.toLowerCase().indexOf('now') >= 0){
+            let commandArr = message.text.split(',')
+            let place = commandArr[1]
+            let command = commandArr[0]
 
-                        request.sendWeatherRequest(coord, 'coordinate', axios).then(result => {
-                            if(result != false){
-                                weatherIcon = request.setWeatherIcon(result.id)
-                                text = 'Weather in '+ place + ' right now is ' + result['weather'][0]['description'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
+            request.sendCoordinateRequest(place, axios).then(placeResult => {
+                if(placeResult != false){
+                    let coord = {
+                        lat : placeResult.geometry.location.lat,
+                        lon : placeResult.geometry.location.lng
+                    }
 
-                                request.sendMessage(text, message.chat.id, axios).then(response => {
-                                    console.log('message sent')
-                                    res.end('ok')
-                                }).catch(err => {
-                                    console.log('Error :', err)
-                                    res.end('Error :' + err)
-                                })
-                            }
-                            else{
-                                text = "I cannot find " + place + ", please insert another location"
-                                request.sendMessage(text, message.chat.id, axios).then(response => {
-                                    console.log('message sent')
-                                    res.end('ok')
-                                }).catch(err => {
-                                    console.log('Error :', err)
-                                    res.end('Error :' + err)
-                                })
-                            }
-                        }).catch(err => {
-                            console.log('Error :', err)
-                            res.end('Error :' + err)
-                        })
-                    }
-                    else{
-                        text = "I cannot find " + place + ", please insert another location"
-                        request.sendMessage(text, message.chat.id, axios).then(response => {
-                            console.log('message sent')
-                            res.end('ok')
-                        }).catch(err => {
-                            console.log('Error :', err)
-                            res.end('Error :' + err)
-                        })
-                    }
-                }).catch(err => {
-                    console.log('Error :', err)
-                    res.end('Error :' + err)
-                })
+                    request.sendWeatherRequest(place, axios, coord, command, commandArr[2]).then(forecastResult => {
+                        if(forecastResult != false){
+                            console.log(forecastResult)
+
+                            //weatherIcon = ''//request.setWeatherIcon(result.id)
+                            //text = 'Weather in '+ place + ' right now is '// + result['weather']['summary'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
+
+                            /*request.sendMessage(text, message.chat.id, axios).then(response => {
+                                console.log('message sent')
+                                res.end('ok')
+                            }).catch(err => {
+                                console.log('Error :', err)
+                                res.end('Error :' + err)
+                            })*/
+                            request.sendMessage(forecastResult, message.chat.id, axios).then(response => {
+                                console.log('message sent')
+                                res.end('ok')
+                            }).catch(err => {
+                                console.log('Error :', err)
+                                res.end('Error :' + err)
+                            })
+                            //console.log(text)
+
+                        }
+                        else{
+                            text = "Sorry, but I cannot find any weather forecast for " + place + ", with all respect, can you provide me with another location?"
+                            request.sendMessage(text, message.chat.id, axios).then(response => {
+                                console.log('message sent')
+                                res.end('ok')
+                            }).catch(err => {
+                                console.log('Error :', err)
+                                res.end('Error :' + err)
+                            })
+                        }
+                    }).catch(err => {
+                        console.log('Error :', err)
+                        res.end('Error :' + err)
+                    })
+                }
+                else{
+                    text = "I cannot find " + place + ", please insert another location"
+                    request.sendMessage(text, message.chat.id, axios).then(response => {
+                        console.log('message sent')
+                        res.end('ok')
+                    }).catch(err => {
+                        console.log('Error :', err)
+                        res.end('Error :' + err)
+                    })
+                }
+            }).catch(err => {
+                console.log('Error :', err)
+                res.end('Error :' + err)
             })
         }
         else{
-            text = "I cannot understand what you mean"
+            text = "Sorry, but I cannot provide that for now"
             request.sendMessage(text, message.chat.id, axios).then(response => {
                 console.log('message sent')
                 res.end('ok')
@@ -131,16 +142,101 @@ app.get('/', (req, res) => res.send('Hello World!'))
 
 app.get('/hello', (req, res) => res.send('wazzup'))
 
-app.get('/weather/:city', function(req, res){
-	let city = req.params.city
-  	let url = 'http://api.openweathermap.org/data/2.5/weather?q='+city+'&APPID=ea654eec38919fc04f92bf923b71b3eb'
-  	console.log('tes')
-  	axios.get(url).then(response => {
-  		console.log(response.data.main.temp + ' ' + clearSky);
-  	})
-  	.catch(error=>{
-  		console.log(error)
-  	})
+app.post('/weather/', function(req, res){
+    const message = req.body.message
+	if(message.text != undefined){
+        if(message.text.toLowerCase().indexOf('/hourly') >= 0 || message.text.toLowerCase().indexOf('/daily') >= 0 || message.text.toLowerCase().indexOf('/hi') >= 0 || message.text.toLowerCase().indexOf('/now') >= 0){
+            let text = help.getHelpInfo(message.text.toLowerCase())
+            /*request.sendMessage(text, message.chat.id, axios).then(response => {
+                console.log('message sent')
+                res.end('ok')
+            }).catch(err => {
+                console.log('Error :', err)
+                res.end('Error :' + err)
+            })*/
+            console.log(text)            
+        }
+        else if(message.text.toLowerCase().indexOf('hourly') >= 0 || message.text.toLowerCase().indexOf('daily') >= 0 || message.text.toLowerCase().indexOf('hi') >= 0 || message.text.toLowerCase().indexOf('now') >= 0){
+            let commandArr = message.text.split(',')
+            let place = commandArr[1]
+            let command = commandArr[0]
+
+            request.sendCoordinateRequest(place, axios).then(placeResult => {
+                if(placeResult != false){
+                    let coord = {
+                        lat : placeResult.geometry.location.lat,
+                        lon : placeResult.geometry.location.lng
+                    }
+
+                    request.sendWeatherRequest(place, axios, coord, command, commandArr[2]).then(forecastResult => {
+                        if(forecastResult != false){
+                            //weatherIcon = ''//request.setWeatherIcon(result.id)
+                            //text = 'Weather in '+ place + ' right now is '// + result['weather']['summary'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
+
+                            /*request.sendMessage(text, message.chat.id, axios).then(response => {
+                                console.log('message sent')
+                                res.end('ok')
+                            }).catch(err => {
+                                console.log('Error :', err)
+                                res.end('Error :' + err)
+                            })*/
+                            console.log(forecastResult)
+                            //console.log(text)
+                        }
+                        else{
+                            text = "Sorry, but I cannot find any weather forecast for " + place + ", with all respect, can you provide me with another location?"
+                            /*request.sendMessage(text, message.chat.id, axios).then(response => {
+                                console.log('message sent')
+                                res.end('ok')
+                            }).catch(err => {
+                                console.log('Error :', err)
+                                res.end('Error :' + err)
+                            })*/
+                            console.log(text)
+                        }
+                    }).catch(err => {
+                        console.log('Error :', err)
+                        res.end('Error :' + err)
+                    })
+                }
+                else{
+                    text = "I cannot find " + place + ", please insert another location"
+                    /*request.sendMessage(text, message.chat.id, axios).then(response => {
+                        console.log('message sent')
+                        res.end('ok')
+                    }).catch(err => {
+                        console.log('Error :', err)
+                        res.end('Error :' + err)
+                    })*/
+                    console.log(text)
+                }
+            }).catch(err => {
+                console.log('Error :', err)
+                res.end('Error :' + err)
+            })
+        }
+        else{
+            text = "Sorry, but I cannot provide that for now"
+            /*request.sendMessage(text, message.chat.id, axios).then(response => {
+                console.log('message sent')
+                res.end('ok')
+            }).catch(err => {
+                console.log('Error :', err)
+                res.end('Error :' + err)
+            })*/
+            console.log(text)
+        }
+    }
+    else{
+        text = "Sorry, but I cannot provide that for now"
+        request.sendMessage(text, message.chat.id, axios).then(response => {
+            console.log('message sent')
+            res.end('ok')
+        }).catch(err => {
+            console.log('Error :', err)
+            res.end('Error :' + err)
+        })
+    }
 })
 // Finally, start our server
 app.listen(8080, function() {
