@@ -13,6 +13,8 @@ var getHelpInfo = function (messageText){
 		case '/hi':
 			text = 'Hello, it is a pleasure to meet you today'
 			break
+		case '/start':
+			text = 'Walter, the weather butler at your service'
 	}
 	return text
 }

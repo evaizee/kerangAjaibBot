@@ -17,7 +17,7 @@ app.post('/new-message/'+process.env.TELEGRAM_BOT_ID, function(req, res) {
 
   //Each message contains "text" and a "chat" object, which has an "id" which is the chat id
     if(message.text != undefined){
-        if(message.text.toLowerCase().indexOf('/hourly') >= 0 || message.text.toLowerCase().indexOf('/daily') >= 0 || message.text.toLowerCase().indexOf('/hi') >= 0 || message.text.toLowerCase().indexOf('/now') >= 0){
+        if(message.text.toLowerCase().indexOf('/hourly') >= 0 || message.text.toLowerCase().indexOf('/daily') >= 0 || message.text.toLowerCase().indexOf('/start') >= 0 || message.text.toLowerCase().indexOf('/hi') >= 0 || message.text.toLowerCase().indexOf('/now') >= 0){
             let text = help.getHelpInfo(message.text.toLowerCase())
             request.sendMessage(text, message.chat.id, axios).then(response => {
                 console.log('message sent')
