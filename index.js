@@ -30,8 +30,8 @@ app.post('/new-message/'+process.env.TELEGRAM_BOT_ID, function(req, res) {
         }
         else if(message.text.toLowerCase().indexOf('hourly') >= 0 || message.text.toLowerCase().indexOf('daily') >= 0 || message.text.toLowerCase().indexOf('hi') >= 0 || message.text.toLowerCase().indexOf('now') >= 0){
             let commandArr = message.text.split(',')
-            let place = commandArr[1]
-            let command = commandArr[0]
+            let place = commandArr[1].trim()
+            let command = commandArr[0].trim()
 
             request.sendCoordinateRequest(place, axios).then(placeResult => {
                 if(placeResult != false){
@@ -44,16 +44,6 @@ app.post('/new-message/'+process.env.TELEGRAM_BOT_ID, function(req, res) {
                         if(forecastResult != false){
                             console.log(forecastResult)
 
-                            //weatherIcon = ''//request.setWeatherIcon(result.id)
-                            //text = 'Weather in '+ place + ' right now is '// + result['weather']['summary'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
-
-                            /*request.sendMessage(text, message.chat.id, axios).then(response => {
-                                console.log('message sent')
-                                res.end('ok')
-                            }).catch(err => {
-                                console.log('Error :', err)
-                                res.end('Error :' + err)
-                            })*/
                             request.sendMessage(forecastResult, message.chat.id, axios).then(response => {
                                 console.log('message sent')
                                 res.end('ok')
@@ -61,7 +51,6 @@ app.post('/new-message/'+process.env.TELEGRAM_BOT_ID, function(req, res) {
                                 console.log('Error :', err)
                                 res.end('Error :' + err)
                             })
-                            //console.log(text)
 
                         }
                         else{
@@ -138,106 +127,6 @@ app.post('/new-message/'+process.env.TELEGRAM_BOT_ID, function(req, res) {
     }
 })
 
-app.get('/', (req, res) => res.send('Hello World!'))
-
-app.get('/hello', (req, res) => res.send('wazzup'))
-
-app.post('/weather/', function(req, res){
-    const message = req.body.message
-	if(message.text != undefined){
-        if(message.text.toLowerCase().indexOf('/hourly') >= 0 || message.text.toLowerCase().indexOf('/daily') >= 0 || message.text.toLowerCase().indexOf('/hi') >= 0 || message.text.toLowerCase().indexOf('/now') >= 0){
-            let text = help.getHelpInfo(message.text.toLowerCase())
-            /*request.sendMessage(text, message.chat.id, axios).then(response => {
-                console.log('message sent')
-                res.end('ok')
-            }).catch(err => {
-                console.log('Error :', err)
-                res.end('Error :' + err)
-            })*/
-            console.log(text)            
-        }
-        else if(message.text.toLowerCase().indexOf('hourly') >= 0 || message.text.toLowerCase().indexOf('daily') >= 0 || message.text.toLowerCase().indexOf('hi') >= 0 || message.text.toLowerCase().indexOf('now') >= 0){
-            let commandArr = message.text.split(',')
-            let place = commandArr[1]
-            let command = commandArr[0]
-
-            request.sendCoordinateRequest(place, axios).then(placeResult => {
-                if(placeResult != false){
-                    let coord = {
-                        lat : placeResult.geometry.location.lat,
-                        lon : placeResult.geometry.location.lng
-                    }
-
-                    request.sendWeatherRequest(place, axios, coord, command, commandArr[2]).then(forecastResult => {
-                        if(forecastResult != false){
-                            //weatherIcon = ''//request.setWeatherIcon(result.id)
-                            //text = 'Weather in '+ place + ' right now is '// + result['weather']['summary'] + ' ' + weatherIcon + '\n' + 'Temperature : ' + result.main.temp
-
-                            /*request.sendMessage(text, message.chat.id, axios).then(response => {
-                                console.log('message sent')
-                                res.end('ok')
-                            }).catch(err => {
-                                console.log('Error :', err)
-                                res.end('Error :' + err)
-                            })*/
-                            console.log(forecastResult)
-                            //console.log(text)
-                        }
-                        else{
-                            text = "Sorry, but I cannot find any weather forecast for " + place + ", with all respect, can you provide me with another location?"
-                            /*request.sendMessage(text, message.chat.id, axios).then(response => {
-                                console.log('message sent')
-                                res.end('ok')
-                            }).catch(err => {
-                                console.log('Error :', err)
-                                res.end('Error :' + err)
-                            })*/
-                            console.log(text)
-                        }
-                    }).catch(err => {
-                        console.log('Error :', err)
-                        res.end('Error :' + err)
-                    })
-                }
-                else{
-                    text = "I cannot find " + place + ", please insert another location"
-                    /*request.sendMessage(text, message.chat.id, axios).then(response => {
-                        console.log('message sent')
-                        res.end('ok')
-                    }).catch(err => {
-                        console.log('Error :', err)
-                        res.end('Error :' + err)
-                    })*/
-                    console.log(text)
-                }
-            }).catch(err => {
-                console.log('Error :', err)
-                res.end('Error :' + err)
-            })
-        }
-        else{
-            text = "Sorry, but I cannot provide that for now"
-            /*request.sendMessage(text, message.chat.id, axios).then(response => {
-                console.log('message sent')
-                res.end('ok')
-            }).catch(err => {
-                console.log('Error :', err)
-                res.end('Error :' + err)
-            })*/
-            console.log(text)
-        }
-    }
-    else{
-        text = "Sorry, but I cannot provide that for now"
-        request.sendMessage(text, message.chat.id, axios).then(response => {
-            console.log('message sent')
-            res.end('ok')
-        }).catch(err => {
-            console.log('Error :', err)
-            res.end('Error :' + err)
-        })
-    }
-})
 // Finally, start our server
 app.listen(8080, function() {
   console.log('Telegram app listening on port 8080!');
