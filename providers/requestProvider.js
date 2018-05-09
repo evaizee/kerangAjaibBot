@@ -48,7 +48,7 @@ var sendWeatherRequest = function (place, axios, location, type, hour) {
 					case 'now':
 						weatherData = forecast.data.currently
 						weatherText = setWeatherIcon(weatherData.icon)
-						weatherData = + 'In ' + place + ' the weather is ' + weatherText.icon + ' ' + weatherText.text + '\nWith temperature of ' + weatherData.temperature + ' C'
+						weatherData = 'In ' + place + ' the weather is ' + weatherText.text + ' ' + weatherText.icon + '\nWith temperature of ' + weatherData.temperature + ' C'
 						break
 					case 'hourly':
 						let time = ''
