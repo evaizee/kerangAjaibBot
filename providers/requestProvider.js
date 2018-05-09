@@ -48,7 +48,7 @@ var sendWeatherRequest = function (place, axios, location, type, hour) {
 					case 'now':
 						weatherData = forecast.data.currently
 						weatherText = setWeatherIcon(weatherData.icon)
-						weatherData = 'It is ' + weatherData.temperature + ' C \r\n The weather is ' + weatherText.text + weatherText.icon + ' in ' + place 
+						weatherData = 'The weather is ' + weatherText.icon + weatherText.text + ' in ' + place + '\nWith ' + weatherData.temperature + ' C'
 						break
 					case 'hourly':
 						let time = ''
@@ -118,7 +118,7 @@ function setMessageText(type, myArray, timeInput, expectedTime){
     		if(expectedTime != undefined){
 	    		if ((myArray[ii].time == timeInput) || (myArray[ii].time-timeInput == 1800) || (timeInput-myArray[ii].time == 1800)) {
 		            weatherText = setWeatherIcon(myArray[ii].icon)
-	    			message = 'On'+ expectedTime + '\nThe weather is ' + weatherText.icon + ' ' + weatherText.text + '\nWhile the temperature is ' + myArray[ii].temperature + 'C\n\n'
+	    			message = 'On'+ expectedTime + '\nThe weather is ' + weatherText.text + ' ' + weatherText.icon + '\nWhile the temperature is ' + myArray[ii].temperature + 'C\n\n'
 		            timeArray.push(myArray[ii])
 		            myArray[ii].message = message
 		            ii = myArray.length
@@ -127,7 +127,7 @@ function setMessageText(type, myArray, timeInput, expectedTime){
 	    	else{
 	    		if(myArray[ii].time <= timeInput){
 	    			weatherText = setWeatherIcon(myArray[ii].icon)
-	    			message += 'On ' + moment.unix(myArray[ii].time).format('H') + '\nThe weather would be ' + weatherText.icon + ' ' + weatherText.text + '\nWhile the temperature is about ' + myArray[ii].temperature + 'C\n\n'
+	    			message += 'On ' + moment.unix(myArray[ii].time).format('H:mm') + '\nThe weather would be ' + weatherText.text + ' ' + weatherText.icon + '\nWhile the temperature is about ' + myArray[ii].temperature + 'C\n\n'
 	    			timeArray.push(myArray[ii])
 	    			myArray[ii].message += message
 	    		}
@@ -138,7 +138,7 @@ function setMessageText(type, myArray, timeInput, expectedTime){
     	}
     	else if(type == 'daily') {
     		weatherText = setWeatherIcon(myArray[ii].icon)
-	    	message += 'On ' + moment.unix(myArray[ii].time).format('MMMM D') + '\nThe weather would be ' + weatherText.icon + ' ' + weatherText.text + '\n\It would be ' + myArray[ii].summary.trim() + '\nWhile the temperature is about ' + myArray[ii].temperatureHigh + 'C' + ' at its peak\n\n'
+	    	message += 'On ' + moment.unix(myArray[ii].time).format('MMMM D') + '\nThe weather would be ' + weatherText.text + ' ' + weatherText.icon + '\n\It would be ' + myArray[ii].summary.trim() + '\nWhile the temperature is about ' + myArray[ii].temperatureHigh + 'C' + ' at its peak\n\n'
     		timeArray.push(myArray[ii])
     		myArray[ii].message += message
     	}
